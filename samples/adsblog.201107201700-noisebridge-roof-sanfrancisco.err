@@ -1,0 +1,87 @@
+using device on /dev/cu.usbmodemfa131
+2011-07-20 17:02:59 -0700 mode-s-avr: starting...
+using device on /dev/cu.usbmodemfa131
+resetting... using device on /dev/cu.usbmodemfd121
+resetting... 0 1 2 3 done
+using device on /dev/cu.usbmodemfd121
+resetting... using device on /dev/cu.usbmodemfd121
+resetting... 0 1 2 3 done
+using device on /dev/cu.usbmodemfd121
+resetting... 0 1 2 3 done
+using device on /dev/cu.usbmodemfd121
+2011-07-20 17:11:42 -0700 mode-s-avr: starting...
+2011-07-20 17:12:13 -0700 mode-s-avr: 19.7419 frames/sec, 497.871 skipped bytes/sec
+2011-07-20 17:12:44 -0700 mode-s-avr: 23.4839 frames/sec, 588.065 skipped bytes/sec
+2011-07-20 17:13:15 -0700 mode-s-avr: 19.7419 frames/sec, 436.839 skipped bytes/sec
+2011-07-20 17:13:46 -0700 mode-s-avr: 19.7097 frames/sec, 418.645 skipped bytes/sec
+2011-07-20 17:14:17 -0700 mode-s-avr: 18.8065 frames/sec, 536.903 skipped bytes/sec
+2011-07-20 17:14:48 -0700 mode-s-avr: 18.2903 frames/sec, 568.839 skipped bytes/sec
+2011-07-20 17:15:19 -0700 mode-s-avr: 19.2258 frames/sec, 582.581 skipped bytes/sec
+2011-07-20 17:15:50 -0700 mode-s-avr: 19.9032 frames/sec, 478.323 skipped bytes/sec
+2011-07-20 17:16:21 -0700 mode-s-avr: 17.9032 frames/sec, 592.516 skipped bytes/sec
+2011-07-20 17:16:52 -0700 mode-s-avr: 18.4194 frames/sec, 582.645 skipped bytes/sec
+2011-07-20 17:17:23 -0700 mode-s-avr: 19.6774 frames/sec, 591.484 skipped bytes/sec
+2011-07-20 17:17:54 -0700 mode-s-avr: 19.7419 frames/sec, 587.419 skipped bytes/sec
+2011-07-20 17:18:25 -0700 mode-s-avr: 19.1935 frames/sec, 575.548 skipped bytes/sec
+2011-07-20 17:18:56 -0700 mode-s-avr: 19.6129 frames/sec, 573.677 skipped bytes/sec
+2011-07-20 17:19:27 -0700 mode-s-avr: 17.7742 frames/sec, 611.032 skipped bytes/sec
+2011-07-20 17:19:58 -0700 mode-s-avr: 18.0968 frames/sec, 539.161 skipped bytes/sec
+2011-07-20 17:20:29 -0700 mode-s-avr: 19.6774 frames/sec, 532.194 skipped bytes/sec
+2011-07-20 17:21:00 -0700 mode-s-avr: 19.3226 frames/sec, 577.419 skipped bytes/sec
+2011-07-20 17:21:31 -0700 mode-s-avr: 21.3548 frames/sec, 484.903 skipped bytes/sec
+2011-07-20 17:22:02 -0700 mode-s-avr: 20.9355 frames/sec, 447.871 skipped bytes/sec
+2011-07-20 17:22:33 -0700 mode-s-avr: 20.0968 frames/sec, 379.484 skipped bytes/sec
+2011-07-20 17:23:04 -0700 mode-s-avr: 19.5484 frames/sec, 450.903 skipped bytes/sec
+2011-07-20 17:23:35 -0700 mode-s-avr: 19.5161 frames/sec, 442.323 skipped bytes/sec
+2011-07-20 17:24:06 -0700 mode-s-avr: 21.5484 frames/sec, 365.806 skipped bytes/sec
+2011-07-20 17:24:37 -0700 mode-s-avr: 19.7419 frames/sec, 418.581 skipped bytes/sec
+2011-07-20 17:25:08 -0700 mode-s-avr: 19.8065 frames/sec, 301.871 skipped bytes/sec
+2011-07-20 17:25:39 -0700 mode-s-avr: 20.9677 frames/sec, 195.032 skipped bytes/sec
+2011-07-20 17:26:10 -0700 mode-s-avr: 20.9677 frames/sec, 236.71 skipped bytes/sec
+2011-07-20 17:26:41 -0700 mode-s-avr: 19.8387 frames/sec, 186.194 skipped bytes/sec
+2011-07-20 17:27:12 -0700 mode-s-avr: 20.8065 frames/sec, 146.258 skipped bytes/sec
+2011-07-20 17:27:43 -0700 mode-s-avr: 18.2258 frames/sec, 322.129 skipped bytes/sec
+2011-07-20 17:28:14 -0700 mode-s-avr: 19.5161 frames/sec, 315.806 skipped bytes/sec
+2011-07-20 17:28:45 -0700 mode-s-avr: 18.4516 frames/sec, 213.806 skipped bytes/sec
+2011-07-20 17:29:16 -0700 mode-s-avr: 18.5161 frames/sec, 230.065 skipped bytes/sec
+2011-07-20 17:29:47 -0700 mode-s-avr: 18.6129 frames/sec, 361.742 skipped bytes/sec
+2011-07-20 17:30:18 -0700 mode-s-avr: 18.129 frames/sec, 273.355 skipped bytes/sec
+2011-07-20 17:30:49 -0700 mode-s-avr: 17.871 frames/sec, 322.129 skipped bytes/sec
+2011-07-20 17:31:20 -0700 mode-s-avr: 17.3226 frames/sec, 377.355 skipped bytes/sec
+2011-07-20 17:31:51 -0700 mode-s-avr: 18.3226 frames/sec, 260.839 skipped bytes/sec
+2011-07-20 17:32:22 -0700 mode-s-avr: 17.9677 frames/sec, 211.355 skipped bytes/sec
+2011-07-20 17:32:53 -0700 mode-s-avr: 19 frames/sec, 251.548 skipped bytes/sec
+2011-07-20 17:33:24 -0700 mode-s-avr: 19.7419 frames/sec, 191.355 skipped bytes/sec
+2011-07-20 17:33:55 -0700 mode-s-avr: 19.8065 frames/sec, 266.129 skipped bytes/sec
+2011-07-20 17:34:26 -0700 mode-s-avr: 18.1935 frames/sec, 313.032 skipped bytes/sec
+2011-07-20 17:34:57 -0700 mode-s-avr: 19.3226 frames/sec, 354.903 skipped bytes/sec
+2011-07-20 17:35:28 -0700 mode-s-avr: 19.7742 frames/sec, 278.903 skipped bytes/sec
+2011-07-20 17:35:59 -0700 mode-s-avr: 19.4839 frames/sec, 196.581 skipped bytes/sec
+2011-07-20 17:36:30 -0700 mode-s-avr: 19.5806 frames/sec, 279.742 skipped bytes/sec
+2011-07-20 17:37:01 -0700 mode-s-avr: 20.7419 frames/sec, 295.484 skipped bytes/sec
+2011-07-20 17:37:32 -0700 mode-s-avr: 20.6129 frames/sec, 262.71 skipped bytes/sec
+2011-07-20 17:38:03 -0700 mode-s-avr: 20.129 frames/sec, 277.032 skipped bytes/sec
+2011-07-20 17:38:34 -0700 mode-s-avr: 19.6452 frames/sec, 286.516 skipped bytes/sec
+2011-07-20 17:39:05 -0700 mode-s-avr: 19.4516 frames/sec, 296.968 skipped bytes/sec
+2011-07-20 17:39:36 -0700 mode-s-avr: 17.871 frames/sec, 337.806 skipped bytes/sec
+2011-07-20 17:40:07 -0700 mode-s-avr: 17.2581 frames/sec, 381.935 skipped bytes/sec
+2011-07-20 17:40:38 -0700 mode-s-avr: 20.2581 frames/sec, 339.548 skipped bytes/sec
+2011-07-20 17:41:09 -0700 mode-s-avr: 18.2258 frames/sec, 367.097 skipped bytes/sec
+2011-07-20 17:41:40 -0700 mode-s-avr: 19.2581 frames/sec, 386.194 skipped bytes/sec
+2011-07-20 17:42:11 -0700 mode-s-avr: 19.7097 frames/sec, 473.161 skipped bytes/sec
+2011-07-20 17:42:42 -0700 mode-s-avr: 17.9677 frames/sec, 478.194 skipped bytes/sec
+2011-07-20 17:43:13 -0700 mode-s-avr: 17.0645 frames/sec, 516.387 skipped bytes/sec
+2011-07-20 17:43:44 -0700 mode-s-avr: 18.2581 frames/sec, 542.129 skipped bytes/sec
+2011-07-20 17:44:15 -0700 mode-s-avr: 19 frames/sec, 560.774 skipped bytes/sec
+2011-07-20 17:44:46 -0700 mode-s-avr: 17.4516 frames/sec, 579.548 skipped bytes/sec
+2011-07-20 17:45:17 -0700 mode-s-avr: 18.129 frames/sec, 526.516 skipped bytes/sec
+2011-07-20 17:45:48 -0700 mode-s-avr: 18.7419 frames/sec, 388.839 skipped bytes/sec
+2011-07-20 17:46:19 -0700 mode-s-avr: 18.0323 frames/sec, 435.548 skipped bytes/sec
+2011-07-20 17:46:50 -0700 mode-s-avr: 16.0968 frames/sec, 507.097 skipped bytes/sec
+2011-07-20 17:47:21 -0700 mode-s-avr: 16.8387 frames/sec, 415.871 skipped bytes/sec
+2011-07-20 17:47:52 -0700 mode-s-avr: 17.3548 frames/sec, 454 skipped bytes/sec
+2011-07-20 17:48:23 -0700 mode-s-avr: 18.129 frames/sec, 556.323 skipped bytes/sec
+2011-07-20 17:48:54 -0700 mode-s-avr: 17.2258 frames/sec, 542.516 skipped bytes/sec
+2011-07-20 17:49:25 -0700 mode-s-avr: 18.1935 frames/sec, 571.806 skipped bytes/sec
+2011-07-20 17:49:56 -0700 mode-s-avr: 18.4194 frames/sec, 524.129 skipped bytes/sec
+2011-07-20 17:50:27 -0700 mode-s-avr: 18.3548 frames/sec, 608.581 skipped bytes/sec
