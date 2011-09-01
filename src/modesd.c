@@ -13,12 +13,15 @@
 #include <termios.h>
 #include <sys/time.h>
 #include <time.h>
-#include <stdarg.h>
+#include <ctype.h>
 
-#define APPNAME "mode-s-avr"
+#include "util.h"
+#include "udp.h"
 
 /* for the microADS-B v1 device with SPRUT firmware 6 */
-#define MADSB_KNOWNVERSION "#00-00-06-04"
+#define MADSB_KNOWNVERSION6 "#00-00-06-04"
+/* for the microADS-B v2 device with SPRUT firmware 8 */
+#define MADSB_KNOWNVERSION8 "#00-00-08-04"
 /* see user.[ch] in SPRUT firmware source for commands info */
 #define MADSB_CMD_READ_VERSION   0x00 /* no args */
 #define MADSB_CMD_SET_MODE       0x43 /* takes one byte, see MADSB_MODE_* */
@@ -30,7 +33,7 @@
 #define MADSB_MODE_TIMECODE      0x10
 #define MADSB_MODE_FRAMENUMBER   0x20
 
-int
+static int
 readln(int fd, char *buf, int buflen)
 {
 	int i = 0;
@@ -47,7 +50,7 @@ readln(int fd, char *buf, int buflen)
 	return i;
 }
 
-int
+static int
 setbaud(int fd)
 {
 	struct termios tios;
@@ -62,7 +65,7 @@ setbaud(int fd)
 	return 0;
 }
 
-int
+static int
 openmicro_init(const char *devname)
 {
 	int fd;
@@ -74,7 +77,7 @@ openmicro_init(const char *devname)
 	 * powered on, so we'd still get whatever state it was last in.
 	 */
 	fprintf(stderr, "resetting... ");
-	if ((fd = open(devname, O_WRONLY)) == -1) {
+	if ((fd = open(devname, O_WRONLY | O_NOCTTY | O_NDELAY)) == -1) {
 		fprintf(stderr, "\nunable to open %s for writing: %s\n", devname, strerror(errno));
 		return -1;
 	}
@@ -99,7 +102,7 @@ openmicro_init(const char *devname)
 	for (i = 0; i < 10; i++) {
 		sleep(1);
 		fprintf(stderr, "%d ", i);
-		if ((fd = open(devname, O_RDWR)) != -1)
+		if ((fd = open(devname, O_RDWR | O_NOCTTY | O_NDELAY)) != -1)
 			break;
 	}
 	if (fd == -1) {
@@ -126,7 +129,8 @@ openmicro_init(const char *devname)
 		close(fd);
 		return -1;
 	}
-	if (strncmp(verstr, MADSB_KNOWNVERSION, strlen(MADSB_KNOWNVERSION)) != 0) {
+	if ((strncmp(verstr, MADSB_KNOWNVERSION6, strlen(MADSB_KNOWNVERSION6)) != 0) &&
+	    (strncmp(verstr, MADSB_KNOWNVERSION8, strlen(MADSB_KNOWNVERSION8)) != 0)) {
 		fprintf(stderr, "unknown version string: %s\n", verstr);
 		close(fd);
 		return -1;
@@ -156,27 +160,31 @@ openmicro_init(const char *devname)
 	return fd;
 }
 
-int
+static int
 openmicro(const char *devname)
 {
 	int fd;
 
-	if ((fd = open(devname, O_RDONLY)) == -1) {
+	if ((fd = open(devname, O_RDONLY | O_NOCTTY | O_NDELAY)) == -1) {
 		fprintf(stderr, "unable to open %s for reading: %s\n", devname, strerror(errno));
 		return -1;
 	}
 	if (setbaud(fd) != 0) {
-		fprintf(stderr, "unable to set baud rate on %s\n", devname);
-		close(fd);
-		return -1;
+		if (errno == ENOTTY) {
+			logmsg("WARNING: %s is not a terminal, skipping serial port config\n", devname);
+		} else {
+			fprintf(stderr, "unable to set baud rate on %s\n", devname);
+			close(fd);
+			return -1;
+		}
 	}
 
 	return fd;
 }
 
 /* serial devices are not quite entirely unlike files. */
-int
-readn(int fd, unsigned char *buf, int i)
+static int
+readn(int fd, char *buf, int i)
 {
 	int c = i;
 	while (i > 0) {
@@ -189,7 +197,7 @@ readn(int fd, unsigned char *buf, int i)
 }
 
 /* read until just after the next ";\r\n" (ie, the next byte should be @) */
-int
+static int
 resync(int fd)
 {
 	int i = 0;
@@ -213,7 +221,7 @@ resync(int fd)
 	return i;
 }
 
-unsigned long long
+static unsigned long long
 extractTC(const char *buf)
 {
 	char tcstr[12 + 1];
@@ -224,7 +232,7 @@ extractTC(const char *buf)
 	return tc;
 }
 
-unsigned long
+static unsigned long
 extractFC(const char *buf)
 {
 	char fcstr[8 + 1];
@@ -235,32 +243,66 @@ extractFC(const char *buf)
 	return fc;
 }
 
-void
+static void
 usage(const char *arg0)
 {
 	printf("\n");
-	printf("%s [-I] -d /dev/device\n", arg0);
+	printf("%s [-I] [-v] -d /dev/device [-U host:port[:protocol]]\n", arg0);
 	printf("\n");
-	printf("\t-d /dev/device\tfilename of AVR-format-speaking Mode-S decoder (required)\n");
-	printf("\t-I\t\tskip microADS-B init process\n");
+	printf("\t-d /dev/device\t\tfilename of AVR-format-speaking Mode-S decoder (required)\n");
+	printf("\t-I\t\t\tskip microADS-B init process\n");
+	printf("\t-U host:port[:protocol]\tSend UDP messages to host:port. Protocol may be:\n");
+	printf("\t\t\t\t\t*XXXXXXXXXXXXXX;\traw (default)\n");
+	printf("\t\t\t\t\tAV*XXXXXXXXXXXXXX;\tplaneplotter\n");
+	printf("\t-v\t\t\tprint Mode-S messages to stdout\n");
 	printf("\n");
 	exit(2);
 }
 
-void
-logmsg(const char *format, ...)
+static int
+parseudparg(const char *optarg)
 {
-	time_t nowT = time(NULL);
-	struct tm *now = localtime(&nowT);
-	char buf[128];
-	strftime(buf, sizeof(buf), "%F %T %z", now);
-	fprintf(stderr, "%s %s: ", buf, APPNAME);
+	/* -u host:port[:variant] */
+	char *hstr = NULL, *pstr = NULL, *vstr = NULL;
+	udp_variant_t variant = UDP_RAW;
+	int port = 0;
+	int err = 0;
 
-	va_list ap;
-	va_start(ap, format);
-	vfprintf(stderr, format, ap);
-	va_end(ap);
-	return;
+	if (!optarg ||
+	    (strlen(optarg) <= 0))
+		return -1;
+
+	if (!(hstr = strdup(optarg)) ||
+	    !(pstr = index(hstr, ':'))) {
+		err = -1; goto out;
+	}
+	*pstr = '\0'; pstr++;
+	if (index(pstr, ':')) {
+		vstr = index(pstr, ':');
+		*vstr = '\0'; vstr++;
+	}
+	if ((strlen(hstr) <= 0) ||
+	    (strlen(pstr) <= 0) ||
+	    ((port = atoi(pstr)) <= 0)) {
+		err = -1; goto out;
+	}
+	if (vstr) {
+		if (strcmp(vstr, "raw") == 0)
+			variant = UDP_RAW;
+		else if (strcmp(vstr, "planeplotter") == 0)
+			variant = UDP_PLANEPLOTTER;
+		else {
+			fprintf(stderr, "invalid protocol '%s' for %s:%d\n", vstr, hstr, port);
+			err = -1; goto out;
+		}
+	}
+	if (udp_addport(hstr, (unsigned short)port, variant) == -1) {
+		fprintf(stderr, "failed to add UDP output port for %s:%d\n", hstr, port);
+		err = -1; goto out;
+	}
+out:
+	if (hstr) free(hstr);
+	return err;
 }
 
 int
@@ -268,13 +310,21 @@ main(int argc, char *argv[])
 {
 	char *devname = NULL;
 	int init = 1; // default to re-initializing the device
+	int verbose = 0;
 
 	int c;
 	opterr = 0;
-	while ((c = getopt(argc, argv, "Id:")) != -1) {
+	while ((c = getopt(argc, argv, "Id:U:v")) != -1) {
 		switch (c) {
 			case 'I': init = 0; break;
 			case 'd': devname = optarg; break;
+			case 'U':
+				if (parseudparg(optarg) == -1) {
+					usage(argv[0]);
+					exit(2);
+				}
+				break;
+			case 'v': verbose++; break;
 			case '?':
 				if (optopt == 'd')
 					fprintf(stderr, "-d requires argument\n");
@@ -286,7 +336,7 @@ main(int argc, char *argv[])
 	if (!devname)
 		usage(argv[0]);
 
-	fprintf(stderr, "using device on %s\n", devname);
+	logmsg("using device on %s\n", devname);
 	int devfd;
 	if (init)
 		devfd = openmicro_init(devname);
@@ -346,8 +396,11 @@ main(int argc, char *argv[])
 		memcpy(es, buf + 1 + TC_LEN, len - TC_LEN - 1 - 2 - FC_LEN - 1);
 		es[len - TC_LEN - 1 - 2 - FC_LEN - 1] = '\0';
 		/* XXX correct time vs PIC clock */
-		/* XXX use planeplotter UDP protocol, ASTERIX, etc */
-		printf("%ld.%06ld *%s;\n", tv_start.tv_sec, (long)tv_start.tv_usec, es);
+		if (verbose)
+			printf("%ld.%06ld *%s;\n", tv_start.tv_sec, (long)tv_start.tv_usec, es);
+		/* XXX support ASTERIX here as well? */
+		if (udp_send(es) < 0)
+			logmsg("failed to send message to one or more UDP hosts\n");
 		nFrames++;
 
 		if ((time(NULL) - nTime) > 30) {
@@ -358,6 +411,7 @@ main(int argc, char *argv[])
 	}
 	logmsg("ending...\n");
 
+	udp_clearports();
 	return 0;
 }
 
