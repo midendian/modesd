@@ -81,6 +81,11 @@ openmicro_init(const char *devname)
 		fprintf(stderr, "\nunable to open %s for writing: %s\n", devname, strerror(errno));
 		return -1;
 	}
+	if (fcntl(fd, F_SETFL, 0) == -1) {
+		fprintf(stderr, "\nunable to restore blocking flag on %s\n", devname);
+		close(fd);
+		return -1;
+	}
 	if (setbaud(fd) != 0) {
 		fprintf(stderr, "\nunable to set baud rate on %s\n", devname);
 		close(fd);
@@ -110,6 +115,11 @@ openmicro_init(const char *devname)
 		return -1;
 	}
 	fprintf(stderr, "done\n");
+	if (fcntl(fd, F_SETFL, 0) == -1) {
+		fprintf(stderr, "\nunable to restore blocking flag on %s\n", devname);
+		close(fd);
+		return -1;
+	}
 	if (setbaud(fd) != 0) {
 		fprintf(stderr, "unable to set baud rate on %s\n", devname);
 		close(fd);
@@ -177,6 +187,11 @@ openmicro(const char *devname)
 			close(fd);
 			return -1;
 		}
+	}
+	if (fcntl(fd, F_SETFL, 0) == -1) {
+		fprintf(stderr, "\nunable to restore blocking flag on %s\n", devname);
+		close(fd);
+		return -1;
 	}
 
 	return fd;
