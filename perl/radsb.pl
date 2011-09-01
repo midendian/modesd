@@ -33,15 +33,14 @@ if ($init) {
 	for (my $i = 0; $i < 10; $i++) {
 		sleep 1; # sleep first in case it hasn't disappeared yet
 		print STDERR "$i ";
-		last if -e $devpath;
+		last if open($dev, "+>", $devpath);
 	}
 	print STDERR "\n";
 
-	open($dev, "+>", $devpath) || die "unable to open $devpath for reading: $?";
 	syswrite($dev, "#00\n", 4);
 	my $ver = <$dev>; chomp $ver;
 	print STDERR "$ver\n";
-	die "unknown version" unless $ver =~ /^\#00-00-06-04/;
+	die "unknown version" unless $ver =~ /^\#00-00-(06|08)-04/;
 
 	syswrite($dev, "#43-32\n", 7);
 	my $mode = <$dev>; chomp $mode;
