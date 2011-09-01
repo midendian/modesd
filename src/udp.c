@@ -133,14 +133,12 @@ udp_send(const char *raw)
 			i += snprintf(buf+i, buflen-i, "AV");
 		i += snprintf(buf+i, buflen-i, "*%s;", raw);
 
-		if (ut->variant == UDP_RAW) {
-			if (send(ut->fd, buf, i, 0) < 0)
-				err++;
-		}
+		if (send(ut->fd, buf, i, 0) < 0)
+			err++;
 		free(buf);
 	}
 
-	return 0;
+	return -err;
 }
 
 
