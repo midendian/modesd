@@ -121,7 +121,7 @@ udp_send(const char *raw)
 		int buflen;
 		int i = 0;
 
-		buflen = 1 + strlen(raw) + 1;
+		buflen = 1 + strlen(raw) + 1 + 1;
 		if (ut->variant == UDP_PLANEPLOTTER)
 			buflen += strlen("AV");
 
