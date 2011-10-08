@@ -14,10 +14,13 @@
 #include <sys/time.h>
 #include <time.h>
 #include <ctype.h>
+#include <signal.h>
 
 #include "util.h"
 #include "udp.h"
 
+/* for the microADS-B v1 device with SPRUT firmware 5 */
+#define MADSB_KNOWNVERSION5 "#00-00-05-04"
 /* for the microADS-B v1 device with SPRUT firmware 6 */
 #define MADSB_KNOWNVERSION6 "#00-00-06-04"
 /* for the microADS-B v2 device with SPRUT firmware 8 */
@@ -60,6 +63,9 @@ setbaud(int fd)
 	cfsetispeed(&tios, B115200);
 	cfsetospeed(&tios, B115200);
 	tios.c_cflag |= (CLOCAL | CREAD);
+	tios.c_iflag &= ~INLCR;
+	tios.c_iflag &= ~ICRNL;
+	tios.c_oflag &= ~OPOST;
 	if (tcsetattr(fd, TCSANOW, &tios) != 0)
 		return -1;
 	return 0;
@@ -81,7 +87,7 @@ openmicro_init(const char *devname)
 		fprintf(stderr, "\nunable to open %s for writing: %s\n", devname, strerror(errno));
 		return -1;
 	}
-	if (fcntl(fd, F_SETFL, 0) == -1) {
+	if (fcntl(fd, F_SETFL, O_APPEND) == -1) {
 		fprintf(stderr, "\nunable to restore blocking flag on %s\n", devname);
 		close(fd);
 		return -1;
@@ -139,12 +145,14 @@ openmicro_init(const char *devname)
 		close(fd);
 		return -1;
 	}
-	if ((strncmp(verstr, MADSB_KNOWNVERSION6, strlen(MADSB_KNOWNVERSION6)) != 0) &&
+	if ((strncmp(verstr, MADSB_KNOWNVERSION5, strlen(MADSB_KNOWNVERSION5)) != 0) &&
+	    (strncmp(verstr, MADSB_KNOWNVERSION6, strlen(MADSB_KNOWNVERSION6)) != 0) &&
 	    (strncmp(verstr, MADSB_KNOWNVERSION8, strlen(MADSB_KNOWNVERSION8)) != 0)) {
 		fprintf(stderr, "unknown version string: %s\n", verstr);
 		close(fd);
 		return -1;
 	}
+	logmsg("device version: %s\n", verstr);
 
 	/* set output mode */
 	char modestr[128];
@@ -204,8 +212,8 @@ readn(int fd, char *buf, int i)
 	int c = i;
 	while (i > 0) {
 		int n = read(fd, buf, i);
-		if (n < 0)
-			return -1;
+		if (n <= 0)
+			return n;
 		i -= n, buf += n;
 	}
 	return c;
@@ -266,6 +274,7 @@ usage(const char *arg0)
 	printf("\n");
 	printf("\t-d /dev/device\t\tfilename of AVR-format-speaking Mode-S decoder (required)\n");
 	printf("\t-I\t\t\tskip microADS-B init process\n");
+	printf("\t-T secs\t\t\texit if no data for n seconds\n");
 	printf("\t-U host:port[:protocol]\tSend UDP messages to host:port. Protocol may be:\n");
 	printf("\t\t\t\t\t*XXXXXXXXXXXXXX;\traw (default)\n");
 	printf("\t\t\t\t\tAV*XXXXXXXXXXXXXX;\tplaneplotter\n");
@@ -326,16 +335,24 @@ main(int argc, char *argv[])
 	char *devname = NULL;
 	int init = 1; // default to re-initializing the device
 	int verbose = 0;
+	int readto = 2; /* seconds */
 
 	int c;
 	opterr = 0;
-	while ((c = getopt(argc, argv, "Id:U:v")) != -1) {
+	while ((c = getopt(argc, argv, "Id:T:U:v")) != -1) {
 		switch (c) {
 			case 'I': init = 0; break;
 			case 'd': devname = optarg; break;
 			case 'U':
 				if (parseudparg(optarg) == -1) {
 					usage(argv[0]);
+					exit(2);
+				}
+				break;
+			case 'T':
+				readto = atoi(optarg);
+				if (readto <= 0) {
+					fprintf(stderr, "invalid value for read timeout (%d)\n", readto);
 					exit(2);
 				}
 				break;
@@ -359,6 +376,9 @@ main(int argc, char *argv[])
 		devfd = openmicro(devname);
 	if (devfd == -1)
 		exit(2);
+
+	/* used only for generating EINTR */
+	signal(SIGALRM, SIG_IGN);
 
 #define TC_LEN 12
 #define SQ_LEN 14
@@ -384,10 +404,19 @@ main(int argc, char *argv[])
 	for (;;) {
 		char buf[ES_LEN_TOTAL + 1];
 		int len = SQ_LEN_TOTAL;
+		int n;
 		struct timeval tv_start;
 		gettimeofday(&tv_start, NULL);
-		if (readn(devfd, buf, len) < len)
+		alarm(readto);
+		n = readn(devfd, buf, len);
+		if (n == -1) {
+			logmsg("alarm fired, exiting\n");
 			break;
+		} else if (n < len) {
+			logmsg("EOF, exiting\n");
+			break;
+		}
+		alarm(0);
 		buf[len] = '\0';
 		if (buf[0] != '@') {
 			int n = resync(devfd);
@@ -418,7 +447,7 @@ main(int argc, char *argv[])
 			logmsg("failed to send message to one or more UDP hosts\n");
 		nFrames++;
 
-		if ((time(NULL) - nTime) > 30) {
+		if ((time(NULL) - nTime) > 2) {
 			logmsg("%g frames/sec, %g skipped bytes/sec\n", nFrames / (double)(time(NULL) - nTime), nSkipped / (double)(time(NULL) - nTime));
 			nFrames = 0; nSkipped = 0; nTime = time(NULL);
 			fflush(stdout);
