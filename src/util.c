@@ -1,3 +1,8 @@
+/*
+ * Some utility functions
+ *
+ * Adam Fritzler <mid@zigamorph.net>
+ */
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -21,4 +26,19 @@ logmsg(const char *format, ...)
 	return;
 }
 
+int
+readln(int fd, char *buf, int buflen)
+{
+	int i = 0;
 
+	while (i < (buflen -  1)) {
+		if (read(fd, buf, 1) != 1)
+			return -1;
+		if (*buf == '\r') continue;
+		if (*buf == '\n') break;
+		buf++, i++;
+	}
+	*buf = '\0';
+
+	return i;
+}
