@@ -42,7 +42,7 @@ static void _HandleRead(XtPointer baton, int* source, XtInputId* id) {
 	case 0:
 		logmsg("read: 0 ... reopening\n");
 		close(nbm->fd);
-		if (-1 == ma_open(nbm->device))
+		if (-1 == (nbm->fd = ma_open(nbm->device)))
 			exit(0);
 		break;
 	default:
