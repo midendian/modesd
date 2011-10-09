@@ -82,7 +82,7 @@ void _HandleRead(XtPointer baton, int* source, XtInputId* id) {
 			case '\r':	nbm->buf[i] = '.'; break;
 			case '\n':	nbm->buf[i] = ','; break;
 			}
-		logmsg("%02d> '%*s'\n", cc, cc, nbm->buf);
+		logmsg("%02d> '%.*s'\n", cc, cc, nbm->buf);
 		nbm->offset = 0;
 		break;
 	}
