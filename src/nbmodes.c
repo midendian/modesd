@@ -40,7 +40,10 @@ static void _HandleRead(XtPointer baton, int* source, XtInputId* id) {
 		XtAppSetExitFlag(nbm->app);
 #endif
 	case 0:
-		logmsg("%s:read(%s): nothing to read!?\n", _func, nbm->device);
+		logmsg("read: 0 ... reopening\n");
+		close(nbm->fd);
+		if (-1 == ma_open(nbm->device))
+			exit(0);
 		break;
 	default:
 		nbm->offset += cc;
