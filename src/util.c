@@ -9,6 +9,16 @@
 
 #include "util.h"
 
+static char* _appname = "SET-APPNAME";
+
+void setappname(char* name) {
+	char* cp = rindex(name, '/');
+	if (NULL != cp)
+		_appname = cp+1;
+	else
+		_appname = name;
+}
+
 void
 logmsg(const char *format, ...)
 {
@@ -16,7 +26,7 @@ logmsg(const char *format, ...)
 	struct tm *now = localtime(&nowT);
 	char buf[128];
 	strftime(buf, sizeof(buf), "%F %T %z", now);
-	fprintf(stderr, "%s %s: ", buf, APPNAME);
+	fprintf(stderr, "%s %s: ", buf, _appname);
 
 	va_list ap;
 	va_start(ap, format);

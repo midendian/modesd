@@ -6,8 +6,8 @@
 #include <unistd.h>
 #include <string.h>
 
-#define APPNAME "mode-s-avr"
-void logmsg(const char *format, ...);
+extern void setappname(char* name);
+extern void logmsg(const char *format, ...);
 
 extern unsigned long long extractTC(const char *buf);
 extern unsigned long extractFC(const char *buf);

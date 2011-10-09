@@ -116,6 +116,7 @@ out:
 int
 main(int argc, char *argv[])
 {
+	setappname(argv[0]);
 	char *devname = NULL;
 	int init = 1; // default to re-initializing the device
 	int verbose = 0;

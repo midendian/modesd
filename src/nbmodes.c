@@ -91,6 +91,8 @@ void _HandleRead(XtPointer baton, int* source, XtInputId* id) {
 int main(int argc, char** argv) {
 	static _NBModeS nbm;
 
+	setappname(argv[0]);
+
 	/* event anchor */
 	nbm.app = XtCreateApplicationContext();
 
