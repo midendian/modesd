@@ -67,52 +67,6 @@ usage(const char *arg0)
 	exit(2);
 }
 
-static int
-parseudparg(const char *optarg)
-{
-	/* -u host:port[:variant] */
-	char *hstr = NULL, *pstr = NULL, *vstr = NULL;
-	udp_variant_t variant = UDP_RAW;
-	int port = 0;
-	int err = 0;
-
-	if (!optarg ||
-	    (strlen(optarg) <= 0))
-		return -1;
-
-	if (!(hstr = strdup(optarg)) ||
-	    !(pstr = index(hstr, ':'))) {
-		err = -1; goto out;
-	}
-	*pstr = '\0'; pstr++;
-	if (index(pstr, ':')) {
-		vstr = index(pstr, ':');
-		*vstr = '\0'; vstr++;
-	}
-	if ((strlen(hstr) <= 0) ||
-	    (strlen(pstr) <= 0) ||
-	    ((port = atoi(pstr)) <= 0)) {
-		err = -1; goto out;
-	}
-	if (vstr) {
-		if (strcmp(vstr, "raw") == 0)
-			variant = UDP_RAW;
-		else if (strcmp(vstr, "planeplotter") == 0)
-			variant = UDP_PLANEPLOTTER;
-		else {
-			fprintf(stderr, "invalid protocol '%s' for %s:%d\n", vstr, hstr, port);
-			err = -1; goto out;
-		}
-	}
-	if (udp_addport(hstr, (unsigned short)port, variant) == -1) {
-		fprintf(stderr, "failed to add UDP output port for %s:%d\n", hstr, port);
-		err = -1; goto out;
-	}
-out:
-	if (hstr) free(hstr);
-	return err;
-}
-
 int
 main(int argc, char *argv[])
 {
@@ -129,7 +83,7 @@ main(int argc, char *argv[])
 			case 'I': init = 0; break;
 			case 'd': devname = optarg; break;
 			case 'U':
-				if (parseudparg(optarg) == -1) {
+				if (udp_parsearg(optarg) == -1) {
 					usage(argv[0]);
 					exit(2);
 				}
