@@ -114,25 +114,39 @@ udp_send(char *raw)
 	int err = 0;
 
 	/* sanity */
-	if (NULL == raw)
+	if (NULL == raw) {
+		logmsg("udp_send(): null packet\n");
 		return -1;
+	}
 	int rLen = strlen(raw);
-	if (14 != rLen || 28 != rLen)
+	if (14 != rLen && 28 != rLen) {
+		logmsg("udp_send(%s): len=%d not 14 or 28\n", raw, rLen);
 		return -1;
+	}
 
 	for (ut = udp_targets; ut; ut = ut->next) {
 		struct iovec iov[4];
 		int n = 0;
+		int want = rLen + 2;
 
 		if (UDP_PLANEPLOTTER == ut->variant) {
 			iov[n].iov_base = "AV"; iov[n++].iov_len = 2;
+			want += 2;
 		}
 		iov[n].iov_base = "*"; iov[n++].iov_len = 1;
 		iov[n].iov_base = raw; iov[n++].iov_len = rLen;
 		iov[n].iov_base = ";"; iov[n++].iov_len = 1;
 
-		if (writev(ut->fd, iov, n) < 0)
-			err++;
+		int w = writev(ut->fd, iov, n);
+		err++; /* presume the worst */
+		if (-1 == w)
+			logmsg("writev(%s:%d): %s\n", ut->host, ut->port,
+			    strerror(errno));
+		else if (w != want)
+			logmsg("writev(%s:%d)=%d wanted=%d\n",
+			    ut->host, ut->port, w, want);
+		else
+			err--; /* false alarm */
 	}
 
 	return -err;
