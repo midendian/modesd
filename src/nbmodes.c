@@ -13,6 +13,8 @@ typedef struct {
 	XtInputId	rio;
 	int		retry;
 	XtIntervalId	timer;
+	int		count40;
+	int		count54;
 
 	/* XXX config */
 	int		fd;
@@ -81,8 +83,21 @@ void _HandleRead(XtPointer baton, int* source, XtInputId* id) {
 			switch (nbm->buf[i]) {
 			case '\r':	nbm->buf[i] = '.'; break;
 			case '\n':	nbm->buf[i] = ','; break;
+			case '\0':	nbm->buf[i] = '!'; break;
+			default:
+				if (! isprint(nbm->buf))
+					nbm->buf[i] = '?';
+				break;
 			}
-		logmsg("%02d> '%.*s'\n", cc, cc, nbm->buf);
+		if (40 == cc)
+			nbm->count40++;
+		else if (54 == cc)
+			nbm->count54++;
+		else {
+			logmsg("%02d> '%.*s' [40:%d, 54:%d]\n",
+			  cc, cc, nbm->buf, nbm->count40, nbm->count54);
+			nbm->count40 = nbm->count54 = 0;
+		}
 		nbm->offset = 0;
 		break;
 	}
