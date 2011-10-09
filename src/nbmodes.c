@@ -42,7 +42,14 @@ static void _HandleRead(XtPointer baton, int* source, XtInputId* id) {
 	case 0:
 		logmsg("read: 0 ... reopening\n");
 		close(nbm->fd);
-		if (-1 == (nbm->fd = ma_open(nbm->device)))
+		for (i = 0; i < 10; i++) {
+			if (-1 == (nbm->fd = ma_open(nbm->device))) {
+				printf("... sleeping\n");
+				sleep(1);
+			} else
+				break;
+		}
+		if (-1 == nbm->fd)
 			exit(0);
 		break;
 	default:
