@@ -25,7 +25,7 @@ void _TryReconnect(XtPointer baton, XtIntervalId* id) {
 	NBModeS	nbm = (NBModeS)baton;
 
 	logmsg("Reconnecting ...\n");
-	if (-1 == (nbm->fd = ma_open(nbm->device))) {
+	if (-1 == (nbm->fd = ma_init(nbm->device))) {
 		logmsg("[%d] open(%s): %s\n", nbm->retry++,
 		    nbm->device, strerror(errno));
 		if (10 < nbm->retry++) {
