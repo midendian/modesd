@@ -11,7 +11,8 @@
 
 static char* _appname = "SET-APPNAME";
 
-void setappname(char* name) {
+void
+setappname(char* name) {
 	char* cp = rindex(name, '/');
 	if (NULL != cp)
 		_appname = cp+1;
@@ -22,11 +23,13 @@ void setappname(char* name) {
 void
 logmsg(const char *format, ...)
 {
-	time_t nowT = time(NULL);
-	struct tm *now = localtime(&nowT);
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	time_t now = (time_t)tv.tv_sec;
+	struct tm *tm = localtime(&now);
 	char buf[128];
-	strftime(buf, sizeof(buf), "%F %T %z", now);
-	fprintf(stderr, "%s %s: ", buf, _appname);
+	strftime(buf, sizeof(buf), "%F %T", tm);
+	fprintf(stderr, "%s.%06d %s: ", buf, tv.tv_usec, _appname);
 
 	va_list ap;
 	va_start(ap, format);
