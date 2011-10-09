@@ -85,7 +85,7 @@ void _HandleRead(XtPointer baton, int* source, XtInputId* id) {
 			case '\n':	nbm->buf[i] = ','; break;
 			case '\0':	nbm->buf[i] = '!'; break;
 			default:
-				if (! isprint(nbm->buf))
+				if (! isprint(nbm->buf[i]))
 					nbm->buf[i] = '?';
 				break;
 			}
