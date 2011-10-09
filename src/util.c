@@ -4,7 +4,6 @@
  * Adam Fritzler <mid@zigamorph.net>
  */
 
-#include <stdio.h>
 #include <stdarg.h>
 #include <time.h>
 
@@ -41,4 +40,26 @@ readln(int fd, char *buf, int buflen)
 	*buf = '\0';
 
 	return i;
+}
+
+unsigned long long
+extractTC(const char *buf)
+{
+	char tcstr[12 + 1];
+	memcpy(tcstr, buf, 12);
+	tcstr[12] = '\0';
+	unsigned long long tc = 0;
+	sscanf(tcstr, "%llX", &tc);
+	return tc;
+}
+
+unsigned long
+extractFC(const char *buf)
+{
+	char fcstr[8 + 1];
+	memcpy(fcstr, buf, 8);
+	fcstr[8] = '\0';
+	unsigned long fc = 0;
+	sscanf(fcstr, "%lX", &fc);
+	return fc;
 }

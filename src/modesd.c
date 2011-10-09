@@ -4,16 +4,12 @@
  * Adam Fritzler <mid@zigamorph.net>
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/time.h>
-#include <signal.h>
-
 #include "util.h"
 #include "udp.h"
 #include "microadsb.h"
+
+#include <sys/time.h>
+#include <signal.h>
 
 /* serial devices are not quite entirely unlike files. */
 static int
@@ -52,28 +48,6 @@ resync(int fd)
 			break;
 	}
 	return i;
-}
-
-static unsigned long long
-extractTC(const char *buf)
-{
-	char tcstr[12 + 1];
-	memcpy(tcstr, buf, 12);
-	tcstr[12] = '\0';
-	unsigned long long tc = 0;
-	sscanf(tcstr, "%llX", &tc);
-	return tc;
-}
-
-static unsigned long
-extractFC(const char *buf)
-{
-	char fcstr[8 + 1];
-	memcpy(fcstr, buf, 8);
-	fcstr[8] = '\0';
-	unsigned long fc = 0;
-	sscanf(fcstr, "%lX", &fc);
-	return fc;
 }
 
 static void
