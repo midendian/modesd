@@ -11,13 +11,45 @@ typedef struct {
 	char		buf[BUFSIZ];
 	int		offset;
 	XtInputId	rio;
+	int		retry;
+	XtIntervalId	timer;
 
 	/* XXX config */
-	int	fd;
-	char*	device;
+	int		fd;
+	char*		device;
 } _NBModeS, *NBModeS;
 
-static void _HandleRead(XtPointer baton, int* source, XtInputId* id) {
+void _HandleRead(XtPointer baton, int* source, XtInputId* id);
+
+void _TryReconnect(XtPointer baton, XtIntervalId* id) {
+	NBModeS	nbm = (NBModeS)baton;
+
+	logmsg("Reconnecting ...\n");
+	if (-1 != nbm->fd) {
+		close(nbm->fd);
+		XtRemoveInput(nbm->rio);
+		nbm->retry = 1;
+	}
+	if (-1 == (nbm->fd = ma_open(nbm->device))) {
+		logmsg("[%d] open(%s): %s\n", nbm->retry++,
+		    nbm->device, strerror(errno));
+		if (11 == nbm->retry) {
+			logmsg("... giving up\n");
+			exit(0);
+		}
+		nbm->timer = XtAppAddTimeOut(nbm->app,
+		    1000, _TryReconnect, baton);
+		return;
+	}
+	logmsg("Reconnected!\n");
+	if (-1 == fcntl(nbm->fd, F_SETFL, O_NONBLOCK))
+		logmsg("fcntl(%s,O_NONBLOCK): %s\n",
+		    nbm->device, strerror(errno));
+	nbm->rio = XtAppAddInput(nbm->app, nbm->fd,
+	    (XtPointer)XtInputReadMask, _HandleRead, (XtPointer)nbm);
+}
+
+void _HandleRead(XtPointer baton, int* source, XtInputId* id) {
 	static char _func[] = "_HandleRead";
 	int i;
 
@@ -41,18 +73,11 @@ static void _HandleRead(XtPointer baton, int* source, XtInputId* id) {
 #endif
 	case 0:
 		logmsg("read: 0 ... reopening\n");
-		close(nbm->fd);
-		for (i = 0; i < 10; i++) {
-			if (-1 == (nbm->fd = ma_open(nbm->device))) {
-				printf("... sleeping\n");
-				sleep(1);
-			} else
-				break;
-		}
-		if (-1 == nbm->fd)
-			exit(0);
+		nbm->timer = XtAppAddTimeOut(nbm->app,
+		    1000, _TryReconnect, baton);
 		break;
 	default:
+		/* XXX parse, etc. */
 		nbm->offset += cc;
 		for (i = 0; i < nbm->offset; i++)
 			switch (nbm->buf[i]) {
