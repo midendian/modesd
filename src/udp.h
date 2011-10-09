@@ -8,7 +8,7 @@ typedef enum udp_variant {
 
 int udp_addport(const char *host, unsigned short port, udp_variant_t variant);
 void udp_clearports(void);
-int udp_send(const char *avrraw);
+int udp_send(char *avrraw);
 int udp_parsearg(const char *optarg);
 
 #endif /* ndef __MODES_UDP_H__ */

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <sys/uio.h>
 #include <netdb.h>
 #include <errno.h>
 
@@ -107,35 +108,31 @@ udp_clearports(void)
 }
 
 int
-udp_send(const char *raw)
+udp_send(char *raw)
 {
 	struct udp_target *ut;
 	int err = 0;
 
-	if (!raw ||
-	    ((strlen(raw) != 14) && (strlen(raw) != 28)))
+	/* sanity */
+	if (NULL == raw)
+		return -1;
+	int rLen = strlen(raw);
+	if (14 != rLen || 28 != rLen)
 		return -1;
 
 	for (ut = udp_targets; ut; ut = ut->next) {
-		char *buf;
-		int buflen;
-		int i = 0;
+		struct iovec iov[4];
+		int n = 0;
 
-		buflen = 1 + strlen(raw) + 1 + 1;
-		if (ut->variant == UDP_PLANEPLOTTER)
-			buflen += strlen("AV");
-
-		if (!(buf = malloc(buflen + 1))) {
-			err++;
-			continue;
+		if (UDP_PLANEPLOTTER == ut->variant) {
+			iov[n].iov_base = "AV"; iov[n++].iov_len = 2;
 		}
-		if (ut->variant == UDP_PLANEPLOTTER)
-			i += snprintf(buf+i, buflen-i, "AV");
-		i += snprintf(buf+i, buflen-i, "*%s;", raw);
+		iov[n].iov_base = "*"; iov[n++].iov_len = 1;
+		iov[n].iov_base = raw; iov[n++].iov_len = rLen;
+		iov[n].iov_base = ";"; iov[n++].iov_len = 1;
 
-		if (send(ut->fd, buf, i, 0) < 0)
+		if (writev(ut->fd, iov, n) < 0)
 			err++;
-		free(buf);
 	}
 
 	return -err;
