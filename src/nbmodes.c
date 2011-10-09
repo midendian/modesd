@@ -33,6 +33,7 @@ static void _HandleRead(XtPointer baton, int* source, XtInputId* id) {
 		/* XXX
 		 * See https://bugs.freedesktop.org/show_bug.cgi?id=34715
 		 * */
+#define XT_STILL_BUGGY
 #ifdef	XT_STILL_BUGGY
 		exit(0);
 #else
