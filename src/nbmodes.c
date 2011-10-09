@@ -25,15 +25,10 @@ void _TryReconnect(XtPointer baton, XtIntervalId* id) {
 	NBModeS	nbm = (NBModeS)baton;
 
 	logmsg("Reconnecting ...\n");
-	if (-1 != nbm->fd) {
-		close(nbm->fd);
-		XtRemoveInput(nbm->rio);
-		nbm->retry = 1;
-	}
 	if (-1 == (nbm->fd = ma_open(nbm->device))) {
 		logmsg("[%d] open(%s): %s\n", nbm->retry++,
 		    nbm->device, strerror(errno));
-		if (11 == nbm->retry) {
+		if (10 < nbm->retry++) {
 			logmsg("... giving up\n");
 			exit(0);
 		}
@@ -73,6 +68,9 @@ void _HandleRead(XtPointer baton, int* source, XtInputId* id) {
 #endif
 	case 0:
 		logmsg("read: 0 ... reopening\n");
+		close(nbm->fd);
+		XtRemoveInput(nbm->rio);
+		nbm->retry = 1;
 		nbm->timer = XtAppAddTimeOut(nbm->app,
 		    1000, _TryReconnect, baton);
 		break;
