@@ -19,6 +19,7 @@ typedef struct {
 	/* XXX config */
 	int		fd;
 	char*		device;
+	int		modeBits;
 } _NBModeS, *NBModeS;
 
 void _HandleRead(XtPointer baton, int* source, XtInputId* id);
@@ -27,7 +28,7 @@ void _TryReconnect(XtPointer baton, XtIntervalId* id) {
 	NBModeS	nbm = (NBModeS)baton;
 
 	logmsg("Reconnecting ...\n");
-	if (-1 == (nbm->fd = ma_init(nbm->device))) {
+	if (-1 == (nbm->fd = ma_init(nbm->device, nbm->modeBits))) {
 		logmsg("[%d] open(%s): %s\n", nbm->retry++,
 		    nbm->device, strerror(errno));
 		if (10 < nbm->retry++) {
@@ -113,8 +114,12 @@ int main(int argc, char** argv) {
 
 	/* XXX */
 	nbm.device = "/dev/ttyACM0";
+	nbm.modeBits = (
+		MADSB_MODE_ALL|
+		MADSB_MODE_TIMECODE|
+		MADSB_MODE_FRAMENUMBER);
 
-	nbm.fd = ma_init(nbm.device);
+	nbm.fd = ma_init(nbm.device, nbm.modeBits);
 	if (-1 == nbm.fd)
 		return -1;
 	if (-1 == fcntl(nbm.fd, F_SETFL, O_NONBLOCK)) {

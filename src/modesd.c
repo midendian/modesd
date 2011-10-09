@@ -76,6 +76,10 @@ main(int argc, char *argv[])
 	int verbose = 0;
 	int readto = 2; /* seconds */
 
+	int modeBits = (
+		MADSB_MODE_ALL|
+		MADSB_MODE_TIMECODE|
+		MADSB_MODE_FRAMENUMBER);
 	int c;
 	opterr = 0;
 	while ((c = getopt(argc, argv, "Id:T:U:v")) != -1) {
@@ -110,7 +114,7 @@ main(int argc, char *argv[])
 	logmsg("using device on %s\n", devname);
 	int devfd;
 	if (init)
-		devfd = ma_init(devname);
+		devfd = ma_init(devname, modeBits);
 	else
 		devfd = ma_open(devname);
 	if (devfd == -1)

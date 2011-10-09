@@ -19,7 +19,7 @@
 #define MADSB_MODE_FRAMENUMBER   0x20
 
 extern int ma_setbaud(int fd);
-extern int ma_init(const char *devname);
+extern int ma_init(const char *devname, int bits);
 extern int ma_open(const char *devname);
 
 #endif

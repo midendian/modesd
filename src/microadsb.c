@@ -32,7 +32,7 @@ ma_setbaud(int fd)
 }
 
 int
-ma_init(const char *devname)
+ma_init(const char *devname, int bits)
 {
 	int fd;
 
@@ -117,8 +117,7 @@ ma_init(const char *devname)
 	/* set output mode */
 	char modestr[128];
 	snprintf(modestr, sizeof(modestr), "#%02X-%02X\n",
-			MADSB_CMD_SET_MODE,
-			MADSB_MODE_ALL | MADSB_MODE_TIMECODE | MADSB_MODE_FRAMENUMBER);
+	    MADSB_CMD_SET_MODE, bits);
 	if (write(fd, modestr, strlen(modestr)) != strlen(modestr)) {
 		fprintf(stderr, "failed to write SET_MODE command to device: %s\n", strerror(errno));
 		close(fd);
