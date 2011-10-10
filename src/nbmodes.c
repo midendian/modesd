@@ -77,7 +77,7 @@ static void _MaybeSendIt(NBModeS nbm) {
 		return;
 	}
 
-	int fc = 2;			/* first char */
+	int fc = 1;			/* first char */
 	int lc = nbm->offset - 2;	/* last char */
 	if (nbm->modeBits & MADSB_MODE_FRAMENUMBER)
 		lc -= 10;
@@ -86,7 +86,6 @@ static void _MaybeSendIt(NBModeS nbm) {
 			_BadPacket(nbm, "@ botch");
 			return;
 		}
-		fc += 12;
 	} else if ('*' != nbm->buf[1]) {
 		_BadPacket(nbm, "* botch");
 		return;
@@ -98,16 +97,16 @@ static void _MaybeSendIt(NBModeS nbm) {
 
 	/* last chance */
 	int i;
-	for (i = fc; i < lc; i++)
+	for (i = fc + 1; i < (lc - 1); i++)
 		if (! isxdigit(nbm->buf[i])) {
 			_BadPacket(nbm, "hex botch");
 			return;
 		}
 
 	/* clear to leave the ship */
-	nbm->buf[lc] = '\0';
-	udp_send(nbm->buf + fc);
-	nbm->buf[lc] = ';';
+	nbm->buf[lc + 1] = '\0';
+	udp_send2(nbm->buf + fc);
+	nbm->buf[lc + 1] = '\n';
 }
 
 void _HandleRead(XtPointer baton, int* source, XtInputId* id) {
