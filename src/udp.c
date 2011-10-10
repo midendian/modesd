@@ -153,6 +153,45 @@ udp_send(char *raw)
 }
 
 int
+udp_send2(char *raw)
+{
+	struct udp_target *ut;
+	int err = 0;
+
+	/* sanity */
+	if (NULL == raw) {
+		logmsg("udp_send(): null packet\n");
+		return -1;
+	}
+	int rLen = strlen(raw);
+
+	for (ut = udp_targets; ut; ut = ut->next) {
+		struct iovec iov[2];
+		int n = 0;
+		int want = rLen;
+
+		if (UDP_PLANEPLOTTER == ut->variant) {
+			iov[n].iov_base = "AV"; iov[n++].iov_len = 2;
+			want += 2;
+		}
+		iov[n].iov_base = raw; iov[n++].iov_len = rLen;
+
+		int w = writev(ut->fd, iov, n);
+		err++; /* presume the worst */
+		if (-1 == w)
+			logmsg("writev(%s:%d): %s\n", ut->host, ut->port,
+			    strerror(errno));
+		else if (w != want)
+			logmsg("writev(%s:%d)=%d wanted=%d\n",
+			    ut->host, ut->port, w, want);
+		else
+			err--; /* false alarm */
+	}
+
+	return -err;
+}
+
+int
 udp_parsearg(const char *optarg)
 {
 	/* -u host:port[:variant] */
