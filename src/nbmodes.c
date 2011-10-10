@@ -177,7 +177,7 @@ int main(int argc, char** argv) {
 	if (NULL != dp) {
 		struct dirent* ent;
 		while (NULL != (ent = readdir(dp))) {
-			if (0 == strcmp("cu.usbmodem", ent->d_name)) {
+			if (0 == strncmp("cu.usbmodem", ent->d_name, 11)) {
 				char buf[127];
 				sprintf(buf, "/dev/%s", ent->d_name);
 				nbm.device = strdup(buf);
