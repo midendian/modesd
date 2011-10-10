@@ -1,3 +1,5 @@
+include make.local
+
 LIBMODS=util udp microadsb
 LIBMODHDR=$(addsuffix .h,$(LIBMODS))
 
@@ -41,3 +43,6 @@ clean:
 microadsb.o: microadsb.h
 udp.o: udp.h
 util.o: util.h
+
+make.local:
+	touch make.local
