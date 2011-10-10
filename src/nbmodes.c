@@ -4,6 +4,7 @@
 #include "util.h"
 
 #include <fcntl.h>
+#include <dirent.h>
 #include <errno.h>
 
 typedef struct {
@@ -171,6 +172,22 @@ int main(int argc, char** argv) {
 
 	/* XXX */
 	nbm.device = "/dev/ttyACM0";
+	/* search for Mac port */
+	DIR* dp = opendir("/dev");
+	if (NULL != dp) {
+		struct dirent* ent;
+		while (NULL != (ent = readdir(dp))) {
+			if (0 == strcmp("cu.usbmodem", ent->d_name)) {
+				char buf[127];
+				sprintf(buf, "/dev/%s", ent->d_name);
+				nbm.device = strdup(buf);
+				logmsg("auto-found device %s\n", nbm.device);
+				break;
+			}
+		}
+		closedir(dp);
+	}
+
 	nbm.modeBits = (
 		MADSB_MODE_ALL
 		|MADSB_MODE_TIMECODE
