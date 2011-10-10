@@ -109,6 +109,18 @@ static void _MaybeSendIt(NBModeS nbm) {
 	nbm->buf[lc + 1] = '\n';
 }
 
+static void _Consume(NBModeS nbm) {
+	if (nbm->size[0] == nbm->offset) {
+		nbm->count[0]++;
+		_MaybeSendIt(nbm);
+	} else if (nbm->size[1] == nbm->offset) {
+		nbm->count[1]++;
+		_MaybeSendIt(nbm);
+	} else
+		_BadPacket(nbm, "wrong size");
+	nbm->offset = 0;
+}
+
 void _HandleRead(XtPointer baton, int* source, XtInputId* id) {
 	static char _func[] = "_HandleRead";
 	int i;
@@ -140,19 +152,8 @@ void _HandleRead(XtPointer baton, int* source, XtInputId* id) {
 		    1000, _TryReconnect, baton);
 		break;
 	default:
-		/* XXX parse, etc. */
 		nbm->offset += cc;
-
-		if (nbm->size[0] == cc) {
-			nbm->count[0]++;
-			_MaybeSendIt(nbm);
-		} else if (nbm->size[1] == cc) {
-			nbm->count[1]++;
-			_MaybeSendIt(nbm);
-		} else
-			_BadPacket(nbm, "wrong size");
-
-		nbm->offset = 0;
+		_Consume(nbm);
 		break;
 	}
 }
