@@ -2,6 +2,7 @@ ICAO	IATA	Callsign	Name
 AAL	AA	American	American Airlines
 AAR	OZ	Asiana	Asiana Airlines
 ABL	BX	Air Busan	Air Busan
+ADO	HD	Air Do	Hokkaido International Airlines 北海道国際航空
 AFR	AF	Air France	Air France
 AMT	TZ	Amtran	ATA Airlines
 AMX	AM	Aeromexico	Aeroméxico
