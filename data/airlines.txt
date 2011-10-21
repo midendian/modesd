@@ -68,6 +68,6 @@ VIR	VS	Virgin	Virgin Atlantic
 VOI	Y4	Volaris	Volaris
 VRD	VX	Redwood	Virgin America
 WJA	WS	WestJet	WesJet
-WOA	WO	World Airways
-YZR	Y8	Yangtze River Express Airlines
+WOA	WO	World	World Airways
+YZR	Y8	Yangtze River	Yangtze River Express Airlines 扬子江快运
 
