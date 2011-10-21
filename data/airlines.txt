@@ -1,0 +1,73 @@
+ICAO	IATA	Callsign	Name
+AAL	AA	American	American Airlines
+AAR	OZ	Asiana	Asiana Airlines
+ABL	BX	Air Busan	Air Busan
+AFR	AF	Air France	Air France
+AMT	TZ	Amtran	ATA Airlines
+AMX	AM	Aeromexico	Aeroméxico
+ANA	NH	All Nippon	All Nippon Airways 全日本空輸
+AWE	US	Cactus	US Airways
+BAW	BA	Speedbird	British Airways
+BER	AB	Air Berlin	Air Berlin
+BWA	BW	Caribbean Airlines	Air Jamaica
+CAL	CI	Dynasty	China Airlines 中華航空股份有限公司
+CAO	CA	Air China Freight	Air China Cargo 中国国际货运航空有限公司
+CCA	CA	Air China	Air China 中国国际航空公司
+CES	MU	China Eastern	China Eastern Airlines 中国东方航空
+CKK	CK	Cargo King	China Cargo 中国货运航空
+CMP	CM	Copa Airlines	Copa Airlines
+COA	CO	Continental	Continental Airlines
+CPA	CX	Cathay	Cathay Pacific Airways 國泰航空公司
+CQH	9C	Air Spring	Spring Airlines 春秋航空公司
+CSN	CZ	China Southern	China Southern Airlines 中国南方航空公司
+CSZ	ZH	Shenzhen Air	Shenzhen Airlines
+DAL	DL	Delta	Delta Airlines
+DLH	LH	Lufthansa	Lufthansa
+EIN	EI	Shamrock	Aer Lingus
+ESR	ZE	Eastar	Eastar Jet
+ETH	ET	Ethiopian	Ethiopian Airlines የኢትዮጵያ
+EVA	BR	EVA	EVA Airways 長榮航空
+FDX	FX	FedEx	FedEx Express
+FFT	F9	Frontier	Frontier Airlines
+FLC		Flight Check	FAA
+GEC	LH	Lufthansa Cargo	Lufthansa Cargo
+GTI	5Y	Giant	Atlas Air
+HAL	HA	Hawaiian	Hawaiian Airlines
+IBX	FW	Ibex	Ibex Airlines
+JAL	JL	Japan Air	Japan Airlines 日本航空
+JBU	B6	Jet Blue	JetBlue Airways
+JEX	JC	Janex	JAL Express
+KAL	KE	Korean Air	Korean Air 대한항공/大韓航空
+LTU	LT	LTU	LTU
+KLM	KL	KLM	KLM
+MSR	MS	Egyptair	Egyptair مصر للطيران
+NAO	NA	North American	North American Airlines
+NCA	KZ	Nippon Cargo	Nippon Cargo Airlines 日本貨物航空
+NKS	NK	Spirit Wings	Spirit Airlines
+PAC	PO	Polar	Polar Air Cargo
+OPT		Options	Flight Options
+QAF		Amiri	Qatar Amari
+QTR	QR	Qatar	Qatar Airways
+RAM	AT	Royal Air Maroc	Royal Air Maroc
+RCH	MC	Reach	USAF Air Mobility Command
+SAA	SA	Springbok	South African Airways
+SFQ	QF	Qantas	Qantas Airways
+SIA	SQ	Singapore	Singapore Airlines
+SQC	SQ	Sing Cargo	Singapore Airlines Cargo
+SOO	9S	Southern Air	Southern Air
+SWG	WG	Sunwing	Sunwing Airlines
+THA	TG	Thai	Thai Airways
+TRS	FL	Citrus	AirTran Airways
+UAE	EK	Emirates	Emirates Airlines
+UAL	UA	United	United Airlines
+USN		Navy	US Navy
+UPS	5X	UPS	United Parcel Service
+USAF	USAF	USAF	US Air Force
+UZB	HY	Uzbekistan	Uzbekistan Airways
+VIR	VS	Virgin	Virgin Atlantic
+VOI	Y4	Volaris	Volaris
+VRD	VX	Redwood	Virgin America
+WJA	WS	WestJet	WesJet
+WOA	WO	World Airways
+YZR	Y8	Yangtze River Express Airlines
+
