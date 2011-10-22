@@ -2,6 +2,7 @@ ICAO	IATA	Callsign	Name
 AAL	AA	American	American Airlines
 AAR	OZ	Asiana	Asiana Airlines
 ABL	BX	Air Busan	Air Busan
+ABW	RU	Airbridge Cargo	AirBridgeCargo Airlines Авиакомпания «ЭйрБриджКарго»
 ADO	HD	Air Do	Hokkaido International Airlines 北海道国際航空
 AFR	AF	Air France	Air France
 AMT	TZ	Amtran	ATA Airlines
@@ -32,9 +33,11 @@ FDX	FX	FedEx	FedEx Express
 FFT	F9	Frontier	Frontier Airlines
 FLC		Flight Check	FAA
 GEC	LH	Lufthansa Cargo	Lufthansa Cargo
+GLG	2K	Aerogal	AeroGal
 GTI	5Y	Giant	Atlas Air
 HAL	HA	Hawaiian	Hawaiian Airlines
 IBX	FW	Ibex	Ibex Airlines
+ICE	FI	Iceair	Icelandair
 JAL	JL	Japan Air	Japan Airlines 日本航空
 JBU	B6	Jet Blue	JetBlue Airways
 JEX	JC	Janex	JAL Express
@@ -58,6 +61,7 @@ SQC	SQ	Sing Cargo	Singapore Airlines Cargo
 SOO	9S	Southern Air	Southern Air
 SWG	WG	Sunwing	Sunwing Airlines
 THA	TG	Thai	Thai Airways
+THY	TK	Turkish	Turkish Airlines Türk Hava Yolları A.O.
 TRS	FL	Citrus	AirTran Airways
 UAE	EK	Emirates	Emirates Airlines
 UAL	UA	United	United Airlines
