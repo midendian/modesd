@@ -4,6 +4,7 @@ AAR	OZ	Asiana	Asiana Airlines
 ABL	BX	Air Busan	Air Busan
 ABW	RU	Airbridge Cargo	AirBridgeCargo Airlines Авиакомпания «ЭйрБриджКарго»
 ADO	HD	Air Do	Hokkaido International Airlines 北海道国際航空
+ALK	UL	SriLankan	SriLankan Airlines
 AFR	AF	Air France	Air France
 AMT	TZ	Amtran	ATA Airlines
 AMX	AM	Aeromexico	Aeroméxico
@@ -44,11 +45,13 @@ JEX	JC	Janex	JAL Express
 KAL	KE	Korean Air	Korean Air 대한항공/大韓航空
 LTU	LT	LTU	LTU
 KLM	KL	KLM	KLM
+MGL	OM	Mongol Air	Miat Mongolian Airlines Монголын Иргэний Агаарын Тээвэр
 MSR	MS	Egyptair	Egyptair مصر للطيران
 NAO	NA	North American	North American Airlines
 NCA	KZ	Nippon Cargo	Nippon Cargo Airlines 日本貨物航空
 NKS	NK	Spirit Wings	Spirit Airlines
 PAC	PO	Polar	Polar Air Cargo
+PAL	PR	Philippine	Philippine Airlines
 OPT		Options	Flight Options
 QAF		Amiri	Qatar Amari
 QTR	QR	Qatar	Qatar Airways
