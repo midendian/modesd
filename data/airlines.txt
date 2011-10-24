@@ -17,6 +17,7 @@ CAL	CI	Dynasty	China Airlines 中華航空股份有限公司
 CAO	CA	Air China Freight	Air China Cargo 中国国际货运航空有限公司
 CCA	CA	Air China	Air China 中国国际航空公司
 CES	MU	China Eastern	China Eastern Airlines 中国东方航空
+CHH	HU	China Hainan	Hainan Airlines 海南航空公司
 CKK	CK	Cargo King	China Cargo 中国货运航空
 CMP	CM	Copa Airlines	Copa Airlines
 COA	CO	Continental	Continental Airlines
