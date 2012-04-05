@@ -191,7 +191,7 @@ while (my $line = <>) {
 	my ($rxtime, $modeS) = ($1, $2);
 
 	$rxtime ||= (gettimeofday + 0);
-	my $attrs = decodeModeS($modeS);
+	my $attrs = decodeModeS(uc $modeS);
 
 	print "$line\t\t";
 	print "\t" if (length($modeS) < 28);
