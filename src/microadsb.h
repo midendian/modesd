@@ -1,6 +1,8 @@
 #ifndef __MODES_MICROADSB_H__
 #define __MODES_MICROADSB_H__
 
+#include "frame.h"
+
 /* for the microADS-B v1 device with SPRUT firmware 5 */
 #define MADSB_KNOWNVERSION5 "#00-00-05-04"
 /* for the microADS-B v1 device with SPRUT firmware 6 */
@@ -18,8 +20,8 @@
 #define MADSB_MODE_TIMECODE      0x10
 #define MADSB_MODE_FRAMENUMBER   0x20
 
-extern int ma_setbaud(int fd);
 extern int ma_init(const char *devname, int bits);
-extern int ma_open(const char *devname);
+extern int ma_open(const char *devname, int init);
+extern int ma_read(int fd, struct frame *frame, int timeout);
 
 #endif

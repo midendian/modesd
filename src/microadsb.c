@@ -10,10 +10,12 @@
 #include <errno.h>
 #include <string.h>
 #include <termios.h>
+#include <sys/time.h>
 
 #include "microadsb.h"
+#include "frame.h"
 
-int
+static int
 ma_setbaud(int fd)
 {
 	struct termios tios;
@@ -138,9 +140,16 @@ ma_init(const char *devname, int bits)
 }
 
 int
-ma_open(const char *devname)
+ma_open(const char *devname, int init)
 {
 	int fd;
+
+	if (init) {
+		return ma_init(devname,
+				MADSB_MODE_ALL|
+				MADSB_MODE_TIMECODE|
+				MADSB_MODE_FRAMENUMBER);
+	}
 
 	if ((fd = open(devname, O_RDONLY | O_NOCTTY | O_NDELAY)) == -1) {
 		fprintf(stderr, "unable to open %s for reading: %s\n", devname, strerror(errno));
@@ -163,3 +172,113 @@ ma_open(const char *devname)
 
 	return fd;
 }
+
+/* read until just after the next ";\r\n" (ie, the next byte should be @) */
+static int
+resync(int fd)
+{
+	int i = 0;
+	for (;;) {
+		char c;
+		if (readn(fd, &c, 1) != 1)
+			return -1;
+		i++;
+		if (c != ';')
+			continue;
+		/* note that ';' also occurs between the squitter and the frame number! */
+
+		char b[2];
+		if (readn(fd, b, 2) != 2)
+			return -1;
+		i += 2;
+		/* again, note the backwards terminator... */
+		if ((b[0] == '\n') && (b[1] == '\r'))
+			break;
+	}
+	return i;
+}
+
+static unsigned long long
+extractTC(const char *buf)
+{
+	char tcstr[12 + 1];
+	memcpy(tcstr, buf, 12);
+	tcstr[12] = '\0';
+	unsigned long long tc = 0;
+	sscanf(tcstr, "%llX", &tc);
+	return tc;
+}
+
+static unsigned long
+extractFC(const char *buf)
+{
+	char fcstr[8 + 1];
+	memcpy(fcstr, buf, 8);
+	fcstr[8] = '\0';
+	unsigned long fc = 0;
+	sscanf(fcstr, "%lX", &fc);
+	return fc;
+}
+
+#define TC_LEN 12
+#define SQ_LEN 14
+#define ES_LEN 28
+#define FC_LEN 8
+#define SQ_LEN_TOTAL (1 + TC_LEN + SQ_LEN + 2 + FC_LEN + 3)
+#define ES_LEN_TOTAL (1 + TC_LEN + ES_LEN + 2 + FC_LEN + 3)
+/*
+ * @00001BA972C05DA7717DBBB591;#000000EC;\n\r
+ * @00001BB20C208D896114583BC127EC054587426E;#000000ED;\n\r
+ * @<48b><56b/112b>;#<64b>;\n\r aka @<12c><14c/28c>;#<8c>;\n\r (40/54bytes)
+ *
+ * Note that the line terminator is \n\r (0x0a, 0x0d), not the rather
+ * more common \r\n!
+ */
+int
+ma_read(int fd, struct frame *frame, int timeout)
+{
+	char buf[ES_LEN_TOTAL + 1];
+	int len = SQ_LEN_TOTAL;
+	int n;
+
+	gettimeofday(&frame->rxstart, NULL);
+
+	alarm(timeout);
+	n = readn(fd, buf, len);
+	if (n == -1) {
+		logmsg("timeout\n");
+		return -1;
+	} else if (n < len) {
+		logmsg("EOF\n");
+		return -1;
+	}
+	gettimeofday(&frame->rxend, NULL);
+	alarm(0);
+	buf[len] = '\0';
+	if (buf[0] != '@') {
+		int n = resync(fd);
+		if (n == -1)
+			return -1;
+		frame->skipped += n;
+		return 0;
+	}
+	if (buf[SQ_LEN_TOTAL - 1] != '\r') {
+		len = ES_LEN_TOTAL;
+		if (readn(fd, buf + SQ_LEN_TOTAL, len - SQ_LEN_TOTAL) < (len - SQ_LEN_TOTAL))
+			return -1;
+		buf[len] = '\0';
+		gettimeofday(&frame->rxend, NULL);
+	}
+	if ( (buf[len - 2] != '\n') || (buf[len - 1] != '\r') )
+		return 0; /* it'll start resync when called again */
+	buf[len - 2] = '\0'; len -= 2;
+
+	frame->ticks = extractTC(buf + 1);
+	frame->seqnum = extractFC(buf + len - FC_LEN - 1);
+	memcpy(frame->data, buf + 1 + TC_LEN, len - TC_LEN - 1 - 2 - FC_LEN - 1);
+	frame->data[len - TC_LEN - 1 - 2 - FC_LEN - 1] = '\0';
+	/* XXX correct time vs PIC clock */
+	return 1;
+}
+
+

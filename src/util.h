@@ -9,9 +9,7 @@
 extern void setappname(char* name);
 extern void logmsg(const char *format, ...);
 
-extern unsigned long long extractTC(const char *buf);
-extern unsigned long extractFC(const char *buf);
-
+extern int readn(int fd, char *buf, int i);
 extern int readln(int fd, char *buf, int buflen);
 
 #endif /* ndef __MODES_UTIL_H__ */
