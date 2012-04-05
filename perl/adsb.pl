@@ -107,6 +107,7 @@ sub decodeModeS {
 	my @pkt = map { hex($_); } ($pktStr =~ /(\w{2})/gm);
 
 	$attrs{'df'} = ($pkt[0] >> 3) & 0x1f;
+	$ext = ($attrs{'df'} >= 16) ? 1 : 0;
 
 	if ($ext) { # 112 bit
 		$attrs{'ap'} = (($pkt[11] << 16) | ($pkt[12] << 8) | $pkt[13]) & 0xffffff;

@@ -1,11 +1,12 @@
 include make.local
 
-LIBMODS=util udp microadsb
+LIBMODS=util udp microadsb aurora
 LIBMODHDR=$(addsuffix .h,$(LIBMODS))
 
 PROG1=modesd
 PROG2=nbmodes
-PROGS=$(PROG1) $(PROG2)
+PROGS=$(PROG1)
+#PROGS=$(PROG1) $(PROG2)
 
 all: $(PROGS)
 

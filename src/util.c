@@ -38,6 +38,20 @@ logmsg(const char *format, ...)
 	return;
 }
 
+/* serial devices are not quite entirely unlike files. */
+int
+readn(int fd, char *buf, int i)
+{
+	int c = i;
+	while (i > 0) {
+		int n = read(fd, buf, i);
+		if (n <= 0)
+			return n;
+		i -= n, buf += n;
+	}
+	return c;
+}
+
 int
 readln(int fd, char *buf, int buflen)
 {
@@ -55,24 +69,3 @@ readln(int fd, char *buf, int buflen)
 	return i;
 }
 
-unsigned long long
-extractTC(const char *buf)
-{
-	char tcstr[12 + 1];
-	memcpy(tcstr, buf, 12);
-	tcstr[12] = '\0';
-	unsigned long long tc = 0;
-	sscanf(tcstr, "%llX", &tc);
-	return tc;
-}
-
-unsigned long
-extractFC(const char *buf)
-{
-	char fcstr[8 + 1];
-	memcpy(fcstr, buf, 8);
-	fcstr[8] = '\0';
-	unsigned long fc = 0;
-	sscanf(fcstr, "%lX", &fc);
-	return fc;
-}
