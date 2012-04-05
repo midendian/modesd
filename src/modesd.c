@@ -6,6 +6,7 @@
 
 #include <sys/time.h>
 #include <signal.h>
+#include <ctype.h>
 
 #include "util.h"
 #include "udp.h"
@@ -75,7 +76,7 @@ main(int argc, char *argv[])
 					}
 				}
 				if (devtype == NULL) {
-					fprintf(stderr, "unknown device type '%s'\n", devtype);
+					fprintf(stderr, "unknown device type '%s'\n", optarg);
 					exit(2);
 				}
 				break;

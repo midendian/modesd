@@ -1,5 +1,7 @@
 include make.local
 
+CFLAGS=-Wall
+
 LIBMODS=util udp microadsb aurora
 LIBMODHDR=$(addsuffix .h,$(LIBMODS))
 
@@ -32,7 +34,7 @@ PROG2CLEAN=$(PROG2) $(PROG2OBJS)
 X11LIBS=$(X11LIBDIR) -lXt -lX11
 
 $(PROG2): $(PROG2OBJS)
-	$(CC) -o $(PROG2) $(PROG2OBJS) $(X11LIBS)
+	$(CC) $(CFLAGS) -o $(PROG2) $(PROG2OBJS) $(X11LIBS)
 
 $(PROG2).o: $(LIBMODHDR)
 

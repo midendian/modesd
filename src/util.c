@@ -6,6 +6,7 @@
 
 #include <stdarg.h>
 #include <time.h>
+#include <sys/time.h>
 
 #include "util.h"
 
@@ -40,7 +41,7 @@ logmsg(const char *format, ...)
 
 /* serial devices are not quite entirely unlike files. */
 int
-readn(int fd, char *buf, int i)
+readn(int fd, unsigned char *buf, int i)
 {
 	int c = i;
 	while (i > 0) {

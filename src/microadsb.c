@@ -6,12 +6,14 @@
  */
 
 #include <stdio.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <string.h>
 #include <termios.h>
 #include <sys/time.h>
 
+#include "util.h"
 #include "microadsb.h"
 #include "frame.h"
 
@@ -179,7 +181,7 @@ resync(int fd)
 {
 	int i = 0;
 	for (;;) {
-		char c;
+		unsigned char c;
 		if (readn(fd, &c, 1) != 1)
 			return -1;
 		i++;
@@ -187,7 +189,7 @@ resync(int fd)
 			continue;
 		/* note that ';' also occurs between the squitter and the frame number! */
 
-		char b[2];
+		unsigned char b[2];
 		if (readn(fd, b, 2) != 2)
 			return -1;
 		i += 2;
@@ -244,7 +246,7 @@ ma_read(int fd, struct frame *frame, int timeout)
 	gettimeofday(&frame->rxstart, NULL);
 
 	alarm(timeout);
-	n = readn(fd, buf, len);
+	n = readn(fd, (unsigned char *)buf, len);
 	if (n == -1) {
 		logmsg("timeout\n");
 		return -1;
@@ -264,7 +266,7 @@ ma_read(int fd, struct frame *frame, int timeout)
 	}
 	if (buf[SQ_LEN_TOTAL - 1] != '\r') {
 		len = ES_LEN_TOTAL;
-		if (readn(fd, buf + SQ_LEN_TOTAL, len - SQ_LEN_TOTAL) < (len - SQ_LEN_TOTAL))
+		if (readn(fd, (unsigned char *)(buf + SQ_LEN_TOTAL), len - SQ_LEN_TOTAL) < (len - SQ_LEN_TOTAL))
 			return -1;
 		buf[len] = '\0';
 		gettimeofday(&frame->rxend, NULL);
