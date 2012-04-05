@@ -1,5 +1,10 @@
 
-Just some simple hacks for working with Mode-S/ADS-B receivers with the SPRUT firmware.
+Simple tools for working with Mode-S/ADS-B receivers.
+
+modesd is tool for POSIX systems to send Mode-S as UDP packets over a network.
+Since it can send to multiple hosts/ports, it is effectively a device
+multiplexer. Supports SPRUT (microADS-B) and Aurora SSRx (in binary mode).
+Tested on Linux and MacOS X.
 
 Adam Fritzler <mid@zigamorph.net>
 
