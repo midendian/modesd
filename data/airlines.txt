@@ -1,15 +1,18 @@
-ICAO	IATA	Callsign	Name
+ICAO	IATA	Callsign	Name	Comments
 AAL	AA	American	American Airlines
 AAR	OZ	Asiana	Asiana Airlines
 ABL	BX	Air Busan	Air Busan
 ABW	RU	Airbridge Cargo	AirBridgeCargo Airlines Авиакомпания «ЭйрБриджКарго»
+ACA	AC	Air Canada	Air Canada
 ADO	HD	Air Do	Hokkaido International Airlines 北海道国際航空
 ALK	UL	SriLankan	SriLankan Airlines
+AFL	SU	Aeroflot	Aeroflot Аэрофлот
 AFR	AF	Air France	Air France
 AMT	TZ	Amtran	ATA Airlines
 AMX	AM	Aeromexico	Aeroméxico
 ANA	NH	All Nippon	All Nippon Airways 全日本空輸
 AWE	US	Cactus	US Airways
+BAF		Belgian AF	Belgian Air Force
 BAW	BA	Speedbird	British Airways
 BER	AB	Air Berlin	Air Berlin
 BWA	BW	Caribbean Airlines	Air Jamaica
@@ -19,14 +22,17 @@ CCA	CA	Air China	Air China 中国国际航空公司
 CES	MU	China Eastern	China Eastern Airlines 中国东方航空
 CHH	HU	China Hainan	Hainan Airlines 海南航空公司
 CKK	CK	Cargo King	China Cargo 中国货运航空
+CKS	K4	Connie	Kalitta Air
 CMP	CM	Copa Airlines	Copa Airlines
 COA	CO	Continental	Continental Airlines
 CPA	CX	Cathay	Cathay Pacific Airways 國泰航空公司
 CQH	9C	Air Spring	Spring Airlines 春秋航空公司
+CRK	HX	Bauhinia	Hong Kong Airlines	Formerly 'N8'
 CSN	CZ	China Southern	China Southern Airlines 中国南方航空公司
 CSZ	ZH	Shenzhen Air	Shenzhen Airlines
 DAL	DL	Delta	Delta Airlines
 DLH	LH	Lufthansa	Lufthansa
+EIA	EZ	Evergreen	Evergreen International Airlines
 EIN	EI	Shamrock	Aer Lingus
 ESR	ZE	Eastar	Eastar Jet
 ETH	ET	Ethiopian	Ethiopian Airlines የኢትዮጵያ
@@ -37,7 +43,9 @@ FLC		Flight Check	FAA
 GEC	LH	Lufthansa Cargo	Lufthansa Cargo
 GLG	2K	Aerogal	AeroGal
 GTI	5Y	Giant	Atlas Air
+GWL	IJ	Great Wall	Great Wall Airlines
 HAL	HA	Hawaiian	Hawaiian Airlines
+HDA	KA	Dragon	Dragonair 港龍航空
 IBX	FW	Ibex	Ibex Airlines
 ICE	FI	Iceair	Icelandair
 JAL	JL	Japan Air	Japan Airlines 日本航空
@@ -51,6 +59,7 @@ MSR	MS	Egyptair	Egyptair مصر للطيران
 NAO	NA	North American	North American Airlines
 NCA	KZ	Nippon Cargo	Nippon Cargo Airlines 日本貨物航空
 NKS	NK	Spirit Wings	Spirit Airlines
+NTH		North Air	Hokkaido Air System 株式会社北海道エアシステム
 PAC	PO	Polar	Polar Air Cargo
 PAL	PR	Philippine	Philippine Airlines
 OPT		Options	Flight Options
@@ -59,8 +68,11 @@ QTR	QR	Qatar	Qatar Airways
 RAM	AT	Royal Air Maroc	Royal Air Maroc
 RCH	MC	Reach	USAF Air Mobility Command
 SAA	SA	Springbok	South African Airways
+SFJ	7G	Starflyer	StarFlyer スターフライヤー
 SFQ	QF	Qantas	Qantas Airways
 SIA	SQ	Singapore	Singapore Airlines
+SKY	BC	Skymark	Skymark Airlines スカイマーク
+SNJ	LQ	Newsky	Solaseed Air (fmr Skynet Asia Airlines)
 SQC	SQ	Sing Cargo	Singapore Airlines Cargo
 SOO	9S	Southern Air	Southern Air
 SWG	WG	Sunwing	Sunwing Airlines
@@ -70,6 +82,7 @@ TRS	FL	Citrus	AirTran Airways
 UAE	EK	Emirates	Emirates Airlines
 UAL	UA	United	United Airlines
 USN		Navy	US Navy
+CNV		Navy	US Navy
 UPS	5X	UPS	United Parcel Service
 USAF	USAF	USAF	US Air Force
 UZB	HY	Uzbekistan	Uzbekistan Airways
