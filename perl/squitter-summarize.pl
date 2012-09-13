@@ -221,23 +221,25 @@ foreach my $al (@{$db_airlines_list}) {
 while (my $line = <>) {
 	$line =~ s/\r//g;
 	chomp($line);
-	if (!($line =~ /^([0-9]+)(?:\.([0-9]+)|)\s+\*(.*)\;$/)) {
+	if (!($line =~ /^(([0-9]+)(?:\.([0-9]+)|)\s+|)\*(.*)\;$/)) {
 		$squits{'ignoredlines'}++;
 		next;
 	}
-	my ($rxtime, $modeS) = ("$1." . ($2||""), $3);
+	my ($rxtime, $modeS) = (($1 ne "") ? $1 : undef, $4);
 
 	my $attrs = decodeModeS($modeS);
 
-	$squits{'first'} = $rxtime if (!defined $squits{'first'} or ($rxtime < $squits{'first'}));
-	$squits{'last'} = $rxtime if (!defined $squits{'last'} or ($rxtime > $squits{'last'}));
+	if ($rxtime) {
+		$squits{'first'} = $rxtime if (!defined $squits{'first'} or ($rxtime < $squits{'first'}));
+		$squits{'last'} = $rxtime if (!defined $squits{'last'} or ($rxtime > $squits{'last'}));
+	}
 	$squits{'total'}++;
 	$squits{(length $modeS == 14) ? 'standard' : 'extended'}++;
 
 	if (defined $attrs->{'df'}) {
 		$squits{'df'}->{$attrs->{'df'}}++;
 	} else {
-		$squits{'df'}->{'unknown'}++;
+		$squits{'df'}->{'-1'}++;
 	}
 
 	if (defined $attrs->{'aa'}) {
@@ -247,11 +249,11 @@ while (my $line = <>) {
 		if (defined $attrs->{'df'}) {
 			$aircraft{$aa}->{'squitters'}->{'df'}->{$attrs->{'df'}}++;
 		} else {
-			$aircraft{$aa}->{'squitters'}->{'df'}->{'unknown'}++;
+			$aircraft{$aa}->{'squitters'}->{'df'}->{'-1'}++;
 		}
 			
 	} else {
-		$aircraft{'unknown'}->{'squitters'}->{'total'}++;
+		$aircraft{hex('ffffff')}->{'squitters'}->{'total'}++;
 	}
 }
 
@@ -268,7 +270,9 @@ print "\tIgnored input lines: " . $squits{'ignoredlines'} . "\n" if ($squits{'ig
 print "\tTotal: " . $squits{'total'} . "\n";
 print "\tStandard: " . $squits{'standard'} . " (" . sprintf("%2.02f", ($squits{'standard'}/$squits{'total'}*100)) . "%)\n";
 print "\tExtended: " . $squits{'extended'} . " (" . sprintf("%2.02f", ($squits{'extended'}/$squits{'total'}*100)) . "%)\n";
-print "\tTime range: " . $squits{'first'} . " to " . $squits{'last'} . "\n";
+if ($squits{'first'} && $squits{'last'}) {
+	print "\tTime range: " . $squits{'first'} . " to " . $squits{'last'} . "\n";
+}
 print "\tDF:\n";
 foreach my $df (sort { $a <=> $b } keys %{$squits{'df'}}) {
 	print "\t\t$df\t" . $squits{'df'}->{$df} . " (" . sprintf("%2.02f", ($squits{'df'}->{$df}/$squits{'total'}*100)) . "%)\n";
@@ -301,8 +305,7 @@ if (1) {
 				$db_aircraft{$icao}->{'Registrant'} || "");
 			if (defined $db_aircraft{$icao}->{'Registrant'}) {
 				my $opb = $db_aircraft{$icao}->{'Registrant'};
-				next unless $opb =~ s/^([A-Z]+)\s*.*?$/$1/;
-				if (defined $db_airlines{$opb}) {
+				if ( ($opb =~ s/^([A-Z]+)\s*.*?$/$1/) && (defined $db_airlines{$opb}) ) {
 					printf("\t%-20s", $db_airlines{$opb}->{'Callsign'});
 				}
 			}
