@@ -221,11 +221,15 @@ foreach my $al (@{$db_airlines_list}) {
 while (my $line = <>) {
 	$line =~ s/\r//g;
 	chomp($line);
-	if (!($line =~ /^(([0-9]+)(?:\.([0-9]+)|)\s+|)\*(.*)\;$/)) {
+	my ($rxtime, $modeS);
+	if (($line =~ /^(([0-9]+)(?:\.([0-9]+)|)\s+|)\*(.*)\;$/)) {
+        ($rxtime, $modeS) = (($1 ne "") ? $1 : undef, $4);
+	} elsif (($line =~ /^\@(.{12})(.{28}|.{56});$/)) {
+        ($rxtime, $modeS) = (undef, $2);
+    } else {
 		$squits{'ignoredlines'}++;
 		next;
 	}
-	my ($rxtime, $modeS) = (($1 ne "") ? $1 : undef, $4);
 
 	my $attrs = decodeModeS($modeS);
 
